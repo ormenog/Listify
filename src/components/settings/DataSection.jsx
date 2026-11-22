@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { CircleAlert, CircleCheck, Download, HardDrive, ShieldCheck, Trash2, Upload } from 'lucide-react'
 import { cn } from '../../lib/cn'
-import { downloadJson, readFileAsText } from '../../lib/download'
+import { readFileAsText, saveJsonFile } from '../../lib/download'
 import { IMPORT_ERRORS, MAX_BACKUP_BYTES, backupFileName, buildBackup, countEntities, parseBackup } from '../../storage/backupService'
 import { useData } from '../../context/DataContext'
 import { useToast } from '../../context/ToastContext'
@@ -35,10 +35,11 @@ export function DataSection() {
   const safetyCopies = backups.list()
   const auto = backups.autoInfo()
 
-  const exportAll = (source = snapshot(), name = backupFileName()) => {
+  const exportAll = async (source = snapshot(), name = backupFileName()) => {
     try {
-      downloadJson(buildBackup(source), name)
-      toast({ title: 'Backup esportato', description: name })
+      const result = await saveJsonFile(buildBackup(source), name)
+      if (result.cancelled) return
+      toast({ title: 'Backup esportato', description: result.location ?? name })
     } catch {
       toast({ tone: 'error', title: 'Esportazione non riuscita', description: 'Il browser non ha consentito il download del file.' })
     }

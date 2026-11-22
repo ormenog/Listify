@@ -22,7 +22,7 @@ export function Header() {
   useEffect(() => setMobileSearch(false), [pathname])
 
   return (
-    <header className="sticky top-0 z-30 h-[60px] border-b border-border bg-bg/85 backdrop-blur-md md:h-[68px]">
+    <header className="sticky top-0 z-30 h-[calc(60px+env(safe-area-inset-top))] border-b border-border bg-bg/85 pt-[env(safe-area-inset-top)] backdrop-blur-md md:h-[calc(68px+env(safe-area-inset-top))]">
       <div className="mx-auto flex h-full max-w-[1240px] items-center gap-3 px-4 md:px-6 lg:px-8">
         {mobileSearch ? (
           <div className="flex flex-1 animate-fade-in items-center gap-2 md:hidden">

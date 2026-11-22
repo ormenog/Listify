@@ -2,9 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // GitHub Pages: l'app è servita da https://ormenog.github.io/Listify/
-  base: '/Listify/',
+  // App Android (Capacitor, `vite build --mode android`): asset con percorsi relativi,
+  // caricati dall'APK. HashRouter rende le rotte indipendenti dalla base.
+  base: mode === 'android' ? './' : '/Listify/',
   plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {
@@ -20,4 +22,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

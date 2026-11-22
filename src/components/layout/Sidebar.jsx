@@ -36,7 +36,7 @@ export function Sidebar({ collapsed, canToggle }) {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-border bg-surface md:flex',
+        'fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-border bg-surface pt-[env(safe-area-inset-top)] md:flex',
         'transition-[width] duration-200 ease-out',
         collapsed ? 'w-[76px]' : 'w-[250px]',
       )}
