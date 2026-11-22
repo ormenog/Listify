@@ -5,7 +5,7 @@
  * i valori non validi vengono corretti e gli elementi irrecuperabili (senza id o nome)
  * vengono scartati e conteggiati, così il chiamante può avvisare l'utente.
  */
-import { defaultCategories, TONES } from '../data/categories'
+import { TONES } from '../data/categories'
 import { nowIso } from '../lib/id'
 import { isValidDateKey, isValidTime } from '../lib/dates'
 
@@ -66,7 +66,7 @@ function normalizeList(raw, report) {
     name: raw.name,
     description: str(raw.description),
     icon: str(raw.icon, 'todo'),
-    categoryId: str(raw.categoryId, 'personale'),
+    categoryId: idOrNull(raw.categoryId),
     projectId: idOrNull(raw.projectId),
     favorite: bool(raw.favorite),
     archived: bool(raw.archived),
@@ -95,7 +95,7 @@ function normalizeTask(raw, report) {
     endTime: time ? checked(raw.endTime, timeOrNull, report) : null,
     location: str(raw.location),
     priority: oneOf(raw.priority, PRIORITIES, 'medium'),
-    categoryId: str(raw.categoryId, 'personale'),
+    categoryId: idOrNull(raw.categoryId),
     listId: idOrNull(raw.listId),
     projectId: idOrNull(raw.projectId),
     done: bool(raw.done),
@@ -164,8 +164,6 @@ export function normalizeData(raw) {
     projects: normalizeCollection(source.projects, normalizeProject, report, 'projects'),
     categories: normalizeCollection(source.categories, normalizeCategory, report, 'categories'),
   }
-  // L'interfaccia richiede almeno una categoria: se mancano tutte, ripristina quelle predefinite
-  if (data.categories.length === 0) data.categories = defaultCategories.map(normalizeCategory)
   report.repaired = repairReferences(data)
   return { data, report }
 }
@@ -181,10 +179,9 @@ function repairReferences(data) {
   const categoryIds = new Set(data.categories.map((c) => c.id))
   const projectIds = new Set(data.projects.map((p) => p.id))
   const listIds = new Set(data.lists.map((l) => l.id))
-  const fallback = data.categories[0].id
   const fix = (entity) => {
-    if (!categoryIds.has(entity.categoryId)) {
-      entity.categoryId = fallback
+    if (entity.categoryId && !categoryIds.has(entity.categoryId)) {
+      entity.categoryId = null
       repaired++
     }
     if (entity.projectId && !projectIds.has(entity.projectId)) {

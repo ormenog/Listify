@@ -10,7 +10,7 @@
  *   listify_data_backup    → ultima copia valida letta all'avvio (prima di qualsiasi modifica)
  *   listify_data_recovery  → contenuto illeggibile conservato intatto, mai cancellato in automatico
  */
-import { createSeedData } from '../data/seed'
+import { createEmptyData } from '../data/seed'
 import { decodeEnvelope, encodeEnvelope, normalizeData } from './schema'
 import { isStorageAvailable, listKeys, readJson, readRaw, removeKey, writeJson, writeRaw } from './localStore'
 
@@ -34,7 +34,7 @@ export function loadData() {
 
   const main = readJson(DATA_KEY)
 
-  // Primo avvio (o archivio cancellato volontariamente): dati dimostrativi, salvati subito.
+  // Primo avvio (o archivio cancellato volontariamente): archivio vuoto, salvato subito.
   // NB: un archivio esistente ma vuoto NON passa di qui: viene caricato così com'è.
   if (main.status === 'missing') {
     return { data: seed(), mode: 'local', source: 'seed', needsSave: true, notice: null }
@@ -125,7 +125,7 @@ function preserveRaw(raw) {
 }
 
 function seed() {
-  return normalizeData(createSeedData()).data
+  return normalizeData(createEmptyData()).data
 }
 
 // ── Copie di sicurezza manuali (create prima di sostituire/unire l'archivio) ──────────

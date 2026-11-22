@@ -9,9 +9,10 @@ import { Button } from '../ui/Button'
 import { CategoryBadge } from '../ui/CategoryBadge'
 import { IconTile } from '../ui/IconTile'
 import { Modal } from '../ui/Modal'
+import { UNCATEGORIZED } from '../../data/categories'
 import { Field, Select, inputClass } from '../ui/Field'
 
-const empty = { name: '', description: '', categoryId: 'spesa', icon: 'basket', projectId: '' }
+const empty = { name: '', description: '', categoryId: null, icon: 'todo', projectId: '' }
 
 /** Modal unico per creare o modificare una lista (dati demo in memoria). */
 export function ListFormModal() {
@@ -33,13 +34,12 @@ export function ListFormModal() {
     setIconEdited(isEdit)
     savingRef.current = false
     const defaults = listModal.defaults ?? {}
-    // La categoria predefinita deve esistere (le categorie possono essere eliminate)
-    const fallbackCat = categories.find((c) => c.id === empty.categoryId) ?? categories[0]
-    const defCategory = defaults.categoryId ? { categoryId: defaults.categoryId, icon: getCategory(defaults.categoryId).icon } : {}
+    // Categoria facoltativa: si usa quella suggerita solo se esiste ancora
+    const defCategory = defaults.categoryId && categories.some((c) => c.id === defaults.categoryId) ? { categoryId: defaults.categoryId, icon: getCategory(defaults.categoryId).icon } : {}
     setForm(
       editing
         ? { name: editing.name, description: editing.description, categoryId: editing.categoryId, icon: editing.icon, projectId: editing.projectId ?? '' }
-        : { ...empty, categoryId: fallbackCat.id, icon: fallbackCat.icon, ...defCategory, projectId: defaults.projectId ?? '' },
+        : { ...empty, ...defCategory, projectId: defaults.projectId ?? '' },
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listModal])
@@ -53,7 +53,7 @@ export function ListFormModal() {
     setTouched(true)
     if (!form.name.trim() || savingRef.current) return
     savingRef.current = true
-    const data = { ...form, name: form.name.trim(), description: form.description.trim(), projectId: form.projectId || null }
+    const data = { ...form, name: form.name.trim(), description: form.description.trim(), projectId: form.projectId || null, categoryId: form.categoryId || null }
     if (isEdit) {
       updateList(editing.id, data)
       toast({ title: 'Modifiche salvate', description: data.name })
@@ -133,12 +133,12 @@ export function ListFormModal() {
 
         <Field label="Categoria">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="Categoria">
-            {categories.map((c) => {
+            {[...categories, UNCATEGORIZED].map((c) => {
               const Icon = getIcon(c.icon)
-              const selected = c.id === form.categoryId
+              const selected = (c.id ?? null) === (form.categoryId || null)
               return (
                 <button
-                  key={c.id}
+                  key={c.id ?? 'none'}
                   type="button"
                   role="radio"
                   aria-checked={selected}

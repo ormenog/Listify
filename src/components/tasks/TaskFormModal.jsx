@@ -9,6 +9,7 @@ import { useUI } from '../../context/UIContext'
 import { Button } from '../ui/Button'
 import { Field, Select, inputClass } from '../ui/Field'
 import { Modal } from '../ui/Modal'
+import { UNCATEGORIZED } from '../../data/categories'
 import { SegmentedControl } from '../ui/SegmentedControl'
 import { useTaskActions } from '../../hooks/useTaskActions'
 
@@ -21,7 +22,7 @@ const empty = {
   endTime: '',
   location: '',
   priority: 'medium',
-  categoryId: 'personale',
+  categoryId: null,
   projectId: '',
   listId: '',
 }
@@ -47,9 +48,8 @@ export function TaskFormModal() {
       setForm({ ...empty, ...Object.fromEntries(Object.entries(editing).map(([k, v]) => [k, v ?? ''])) })
     } else {
       const defaults = taskModal.defaults ?? {}
-      // La categoria predefinita deve esistere (le categorie possono essere eliminate)
-      const fallbackCat = categories.find((c) => c.id === empty.categoryId) ?? categories[0]
-      const categoryId = categories.some((c) => c.id === defaults.categoryId) ? defaults.categoryId : fallbackCat.id
+      // Categoria facoltativa: si usa quella suggerita solo se esiste ancora
+      const categoryId = categories.some((c) => c.id === defaults.categoryId) ? defaults.categoryId : null
       setForm({ ...empty, ...defaults, categoryId })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,6 +74,7 @@ export function TaskFormModal() {
       ...form,
       title: form.title.trim(),
       description: form.description.trim(),
+      categoryId: form.categoryId || null,
       date: form.date || null,
       time: form.time || null,
       endTime: (form.time && form.endTime) || null,
@@ -213,12 +214,12 @@ export function TaskFormModal() {
 
         <Field label="Categoria">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="Categoria">
-            {categories.map((c) => {
+            {[...categories, UNCATEGORIZED].map((c) => {
               const Icon = getIcon(c.icon)
-              const selected = c.id === form.categoryId
+              const selected = (c.id ?? null) === (form.categoryId || null)
               return (
                 <button
-                  key={c.id}
+                  key={c.id ?? 'none'}
                   type="button"
                   role="radio"
                   aria-checked={selected}

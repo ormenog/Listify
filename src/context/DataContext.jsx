@@ -12,6 +12,7 @@ import {
   subscribeToExternalChanges,
 } from '../storage/dataRepository'
 import { mergeData } from '../storage/backupService'
+import { UNCATEGORIZED } from '../data/categories'
 import { useToast } from './ToastContext'
 
 /**
@@ -55,7 +56,7 @@ const NOTICES = {
   'corrupt-reset': {
     tone: 'warning',
     title: 'Non è stato possibile leggere i dati salvati',
-    description: 'Abbiamo caricato i dati di esempio. L’archivio originale è stato conservato e non è stato cancellato.',
+    description: 'Listify è ripartito da un archivio vuoto. L’archivio originale è stato conservato e non è stato cancellato.',
   },
   'corrupt-readonly': {
     tone: 'error',
@@ -170,7 +171,8 @@ export function DataProvider({ children }) {
   const { lists, tasks, projects, categories } = state
 
   const api = useMemo(() => {
-    const getCategory = (id) => categories.find((c) => c.id === id) ?? categories[0]
+    // Contenuti senza categoria (o con categoria eliminata) usano UNCATEGORIZED, mai salvato
+    const getCategory = (id) => (id && categories.find((c) => c.id === id)) || UNCATEGORIZED
     return {
       lists,
       tasks,
@@ -291,7 +293,7 @@ export function DataProvider({ children }) {
         return id
       },
       updateCategory: (id, changes) => dispatch({ type: 'category/update', id, changes }),
-      /** Elimina la categoria spostando liste, attività ed eventi su `replacementId`. */
+      /** Elimina la categoria spostando liste, attività ed eventi su `replacementId` (null = senza categoria). */
       removeCategory: (id, replacementId) => dispatch({ type: 'category/remove', id, replacementId }),
     }
   }, [lists, tasks, projects, categories, storage, commitAll])

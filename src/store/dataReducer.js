@@ -27,7 +27,8 @@ function insertAt(collection, entity, index) {
  */
 function withValidRefs(state, entity) {
   const out = { ...entity }
-  if ('categoryId' in out && !state.categories.some((c) => c.id === out.categoryId)) out.categoryId = state.categories[0]?.id
+  // La categoria è facoltativa: assente o inesistente → null ("Senza categoria")
+  if (!out.categoryId || !state.categories.some((c) => c.id === out.categoryId)) out.categoryId = null
   if (out.projectId && !state.projects.some((p) => p.id === out.projectId)) out.projectId = null
   if (out.listId && !state.lists.some((l) => l.id === out.listId)) out.listId = null
   return out
@@ -197,11 +198,12 @@ export function dataReducer(state, action) {
       return next === state.categories ? state : { ...state, categories: next }
     }
     case 'category/remove': {
-      // Liste, attività ed eventi passano alla categoria sostitutiva: nessun riferimento orfano.
-      const { id, replacementId } = action
-      if (id === replacementId || !state.categories.some((c) => c.id === id) || !state.categories.some((c) => c.id === replacementId)) {
-        return state
-      }
+      // Liste, attività ed eventi passano alla categoria sostitutiva, oppure restano senza categoria
+      // (replacementId null). Nessun riferimento orfano; si può eliminare anche l'ultima categoria.
+      const { id } = action
+      const replacementId = action.replacementId || null
+      if (id === replacementId || !state.categories.some((c) => c.id === id)) return state
+      if (replacementId && !state.categories.some((c) => c.id === replacementId)) return state
       const move = (x) => (x.categoryId === id ? { ...x, categoryId: replacementId } : x)
       return {
         ...state,

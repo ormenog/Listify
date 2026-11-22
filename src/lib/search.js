@@ -1,4 +1,5 @@
 import { formatRelativeDay } from './dates'
+import { UNCATEGORIZED } from '../data/categories'
 
 /**
  * Normalizzazione per la ricerca: minuscole, senza accenti, spazi compattati.
@@ -31,7 +32,7 @@ export function matches(fields, query) {
  */
 export function searchAll({ lists, tasks, projects, categories }, query, limit = 4) {
   if (!normalizeText(query)) return []
-  const catOf = (id) => categories.find((c) => c.id === id) ?? categories[0]
+  const catOf = (id) => (id && categories.find((c) => c.id === id)) || UNCATEGORIZED
   const projectOf = (id) => projects.find((p) => p.id === id)
   const byArchived = (a, b) => Number(a.archived) - Number(b.archived)
 

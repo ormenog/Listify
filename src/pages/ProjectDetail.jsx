@@ -60,7 +60,7 @@ export default function ProjectDetail() {
   const daysLeft = project.endDate ? diffDays(today, project.endDate) : null
   const nextDeadline = open.find((t) => t.date && t.date >= today)
   const firstCat = stats.linked[0]?.categoryId ?? stats.lists[0]?.categoryId
-  const defaultCategory = categories.some((c) => c.id === firstCat) ? firstCat : categories[0].id
+  const defaultCategory = categories.some((c) => c.id === firstCat) ? firstCat : null
 
   const quickAdd = (e) => {
     e.preventDefault()

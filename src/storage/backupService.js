@@ -92,7 +92,6 @@ export function parseBackup(text) {
   const { invalidValues } = decoded.report
   if (invalidValues) warnings.push(`${invalidValues} ${invalidValues === 1 ? 'data o orario non valido verrà rimosso' : 'date o orari non validi verranno rimossi'}.`)
   if (repaired) warnings.push(`${repaired} ${repaired === 1 ? 'collegamento a un contenuto mancante verrà corretto' : 'collegamenti a contenuti mancanti verranno corretti'}.`)
-  if (d.categories.length === 0) warnings.push('Il backup non contiene categorie: verranno usate quelle predefinite.')
 
   return {
     ok: true,
@@ -134,8 +133,7 @@ export function mergeData(current, incoming, createId) {
       added.categories++
     }
   }
-  const fallbackCat = current.categories[0]?.id ?? newCategories[0]?.id
-  const mapCat = (id) => catMap.get(id) ?? fallbackCat
+  const mapCat = (id) => (id ? (catMap.get(id) ?? null) : null)
 
   // Progetti
   const projMap = new Map()

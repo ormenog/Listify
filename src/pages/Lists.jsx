@@ -23,6 +23,9 @@ const SORTS = [
   { value: 'items', label: 'Numero elementi', fn: (a, b) => b.items.length - a.items.length },
 ]
 
+/** Filtro categoria: 'all', 'none' (senza categoria) oppure l'id di una categoria. */
+const inCategory = (list, id) => id === 'all' || (id === 'none' ? !list.categoryId : list.categoryId === id)
+
 export default function Lists() {
   const { lists, categories } = useData()
   const { openCreateList } = useUI()
@@ -44,13 +47,13 @@ export default function Lists() {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
     return active
-      .filter((l) => categoryId === 'all' || l.categoryId === categoryId)
+      .filter((l) => inCategory(l, categoryId))
       .filter((l) => !q || l.name.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q) || l.items.some((i) => i.name.toLowerCase().includes(q)))
       .sort(SORTS.find((s) => s.value === sort).fn)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lists, query, categoryId, sort])
 
-  const countFor = (id) => active.filter((l) => id === 'all' || l.categoryId === id).length
+  const countFor = (id) => active.filter((l) => inCategory(l, id)).length
   const currentSort = SORTS.find((s) => s.value === sort)
   const filtered = query || categoryId !== 'all'
 
@@ -118,6 +121,8 @@ export default function Lists() {
         options={[
           { value: 'all', label: 'Tutte', count: countFor('all') },
           ...categories.map((c) => ({ value: c.id, label: c.name, icon: getIcon(c.icon), tone: c.tone, count: countFor(c.id) })),
+          // Filtro per le liste senza categoria, solo se ce ne sono
+          ...(countFor('none') > 0 || categoryId === 'none' ? [{ value: 'none', label: 'Senza categoria', count: countFor('none') }] : []),
         ]}
       />
 
