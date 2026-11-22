@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Listify — Organizza la tua vita, una lista alla volta." />
+    <title>Listify</title>
+    <script>
+      // Applica il tema prima del render per evitare il flash di colore
+      (function () {
+        // Stessa chiave di src/storage/settingsRepository.js (con ripiego sulla chiave delle fasi precedenti)
+        var pref = 'system'
+        try {
+          var s = JSON.parse(localStorage.getItem('listify_settings') || 'null')
+          pref = (s && s.theme) || localStorage.getItem('listify-theme') || 'system'
+        } catch (e) {}
+        var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
