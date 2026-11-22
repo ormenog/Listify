@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { HashRouter, Route, Routes } from 'react-router'
 import { ThemeProvider } from './context/ThemeContext'
 import { ToastProvider } from './context/ToastContext'
 import { UIProvider } from './context/UIContext'
@@ -18,7 +18,7 @@ export default function App() {
         <ConfirmProvider>
           <UIProvider>
             <DataProvider>
-              <BrowserRouter>
+              <HashRouter>
                 <Routes>
                   <Route element={<AppLayout />}>
                     <Route index element={<Pages.Dashboard />} />
@@ -36,7 +36,7 @@ export default function App() {
                     <Route path="*" element={<Pages.NotFound />} />
                   </Route>
                 </Routes>
-              </BrowserRouter>
+              </HashRouter>
             </DataProvider>
           </UIProvider>
         </ConfirmProvider>

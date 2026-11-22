@@ -30,8 +30,15 @@ export function AppLayout() {
 
   return (
     <div className="min-h-dvh bg-bg">
+      {/* Con HashRouter un'ancora "#contenuto" verrebbe letta come rotta: si sposta il focus via script */}
       <a
         href="#contenuto"
+        onClick={(e) => {
+          e.preventDefault()
+          const main = document.getElementById('contenuto')
+          main?.setAttribute('tabindex', '-1')
+          main?.focus()
+        }}
         className="sr-only z-[80] rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-on-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         Vai al contenuto

@@ -10,7 +10,9 @@ Listify — Italian-language personal organizer ("Organizza la tua vita, una lis
 
 - `npm run dev` — Vite dev server (http://localhost:5173)
 - `npm run build` — production build; the only automated check (no lint, no test suite). Verify behavior in the browser.
-- `npm run preview` — serve the build
+- `npm run preview` — serve the build (at http://localhost:4173/Listify/)
+
+**Deploy** — GitHub Pages at https://ormenog.github.io/Listify/ via `.github/workflows/deploy.yml` (push to `main` or manual run; Node 20, `npm ci`, `npm run build`, uploads `dist`). Hence `base: '/Listify/'` in `vite.config.js` and `HashRouter` in `App.jsx` (URLs look like `/Listify/#/liste/<id>`, so reloads never 404). Consequences: never use plain `href="#…"` anchors (they become routes — see the skip link in `AppLayout`), and reference public assets through Vite (absolute `/…` paths in `index.html` are rewritten with the base). LocalStorage is per-origin: `ormenog.github.io` is shared by all the owner's Pages sites, which is why every key is prefixed `listify_`.
 
 Stack: React 19 + Vite 6 (JavaScript, no TypeScript), Tailwind CSS v4 via `@tailwindcss/vite` (no `tailwind.config.js`), React Router 7 (import from `react-router`), Lucide React, Manrope via `@fontsource-variable/manrope`.
 
