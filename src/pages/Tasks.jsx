@@ -12,7 +12,7 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { FilterChips } from '../components/ui/FilterChips'
 import { SearchBar } from '../components/ui/SearchBar'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 import { TaskRow } from '../components/tasks/TaskRow'
 
 const DATE_FILTERS = [
@@ -88,9 +88,7 @@ export default function Tasks() {
         title="Attività"
         description="Le tue attività personali, con o senza scadenza. Possono appartenere a una lista o a un progetto, ma non è obbligatorio."
         actions={
-          <Button icon={Plus} onClick={() => openCreateTask({ kind: 'task' })} className="max-sm:hidden">
-            Nuova attività
-          </Button>
+          <PageAddButton onClick={() => openCreateTask({ kind: 'task' })}>Nuova attività</PageAddButton>
         }
       />
 
@@ -153,10 +151,14 @@ export default function Tasks() {
           }
           action={
             <div className="flex gap-2">
-              <Button variant="secondary" onClick={reset}>
-                Azzera filtri
-              </Button>
-              <Button icon={Plus} onClick={() => openCreateTask({ kind: 'task', date: dateFilter === 'today' ? today : undefined })}>
+              {/* "Azzera filtri" solo se c'è davvero qualche filtro attivo */}
+              {all.length > 0 && (status !== 'open' || dateFilter !== 'all' || priority !== 'all' || query) && (
+                <Button variant="secondary" onClick={reset}>
+                  Azzera filtri
+                </Button>
+              )}
+              {/* Su mobile si crea dal "+" dell'intestazione */}
+              <Button icon={Plus} onClick={() => openCreateTask({ kind: 'task', date: dateFilter === 'today' ? today : undefined })} className="max-sm:hidden">
                 Nuova attività
               </Button>
             </div>

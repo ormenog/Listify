@@ -7,7 +7,7 @@ import { useData } from '../context/DataContext'
 import { Button } from '../components/ui/Button'
 import { Dropdown } from '../components/ui/Dropdown'
 import { IconTile } from '../components/ui/IconTile'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 import { CategoryFormModal } from '../components/categories/CategoryFormModal'
 import { CategoryDeleteModal } from '../components/categories/CategoryDeleteModal'
 
@@ -23,9 +23,7 @@ export default function Categories() {
         title="Categorie"
         description="Ogni lista, attività ed evento appartiene a una categoria con un colore e un’icona propri. Aprine una per vedere le liste associate."
         actions={
-          <Button icon={Plus} onClick={() => setEditing('new')} className="max-sm:hidden">
-            Nuova categoria
-          </Button>
+          <PageAddButton onClick={() => setEditing('new')}>Nuova categoria</PageAddButton>
         }
       />
 

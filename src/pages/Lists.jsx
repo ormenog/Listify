@@ -14,7 +14,7 @@ import { ListCard } from '../components/ui/ListCard'
 import { ListRow } from '../components/ui/ListRow'
 import { SearchBar } from '../components/ui/SearchBar'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 
 const SORTS = [
   { value: 'recent', label: 'Ultima modifica', fn: (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt) },
@@ -63,9 +63,7 @@ export default function Lists() {
         title="Le mie liste"
         description="Tutte le tue liste attive in un unico posto. Cerca, filtra per categoria e scegli la vista che preferisci."
         actions={
-          <Button icon={Plus} onClick={openCreateList} className="max-sm:hidden">
-            Nuova lista
-          </Button>
+          <PageAddButton onClick={openCreateList}>Nuova lista</PageAddButton>
         }
       />
 
@@ -137,7 +135,7 @@ export default function Lists() {
           title="Nessuna lista"
           description="Crea la tua prima lista: spesa, viaggio, idee o qualsiasi cosa da organizzare."
           action={
-            <Button icon={Plus} onClick={openCreateList}>
+            <Button icon={Plus} onClick={openCreateList} className="max-sm:hidden">
               Nuova lista
             </Button>
           }

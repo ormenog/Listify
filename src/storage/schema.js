@@ -5,17 +5,24 @@
  * i valori non validi vengono corretti e gli elementi irrecuperabili (senza id o nome)
  * vengono scartati e conteggiati, così il chiamante può avvisare l'utente.
  */
-import { TONES } from '../data/categories'
+import { TONES, createDefaultCategories } from '../data/categories'
 import { nowIso } from '../lib/id'
 import { isValidDateKey, isValidTime } from '../lib/dates'
 
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
 
 /**
  * Migrazioni: MIGRATIONS[n] trasforma i dati dalla versione n alla n + 1.
- * Esempio futuro: 1: (data) => ({ ...data, tags: [] })
  */
-const MIGRATIONS = {}
+const MIGRATIONS = {
+  // 1 → 2: tornano le categorie predefinite. Solo negli archivi senza nessuna categoria
+  // (quelli creati vuoti dalla versione 1); gira una volta sola, quindi se l'utente poi le
+  // elimina non ricompaiono.
+  1: (data) => {
+    const categories = Array.isArray(data?.categories) ? data.categories : []
+    return categories.length ? data : { ...data, categories: createDefaultCategories() }
+  },
+}
 
 const PRIORITIES = ['low', 'medium', 'high']
 const KINDS = ['task', 'event']

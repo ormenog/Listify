@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { AlertCircle, CalendarDays, Plus, Sunrise } from 'lucide-react'
+import { AlertCircle, CalendarDays, Sunrise } from 'lucide-react'
 import { cn } from '../lib/cn'
 import { addDays, formatLongDay, formatRelativeDay, todayKey } from '../lib/dates'
 import { byDateTime, byTime, isOverdue } from '../lib/planner'
@@ -8,7 +8,7 @@ import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
 import { Button } from '../components/ui/Button'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 import { TaskRow } from '../components/tasks/TaskRow'
 
 /** Agenda: i prossimi giorni in ordine cronologico, con gli elementi in ritardo in evidenza. */
@@ -33,9 +33,7 @@ export default function Agenda() {
         title="Agenda"
         description="Tutto ciò che ti aspetta nei prossimi giorni, in ordine cronologico."
         actions={
-          <Button icon={Plus} onClick={() => openCreateTask({ kind: 'task', date: today })} className="max-sm:hidden">
-            Nuova attività
-          </Button>
+          <PageAddButton onClick={() => openCreateTask({ kind: 'task', date: today })}>Nuova attività</PageAddButton>
         }
       />
 

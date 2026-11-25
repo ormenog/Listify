@@ -72,7 +72,9 @@ function Breadcrumb() {
         {/* Mobile: pulsante indietro */}
         <button
           type="button"
-          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(parent.to))}
+          // idx (posizione nella cronologia dell'app, gestita dal router) > 0 = c'è una pagina precedente
+          // dentro l'app; history.length conterebbe anche le pagine visitate prima di aprirla.
+          onClick={() => (window.history.state?.idx > 0 ? navigate(-1) : navigate(parent.to))}
           className="-ml-2 inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] text-fg transition-colors hover:bg-hover md:hidden"
           aria-label="Indietro"
         >
