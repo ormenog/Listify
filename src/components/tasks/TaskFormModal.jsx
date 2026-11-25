@@ -62,7 +62,8 @@ export function TaskFormModal() {
   const dateMissing = isEvent ? !form.date : !!form.time && !form.date
   const dateError = touched && dateMissing
   // Le condizioni di validità non dipendono da touched: il submit le verifica sempre
-  const endBeforeStart = !!(form.endTime && form.time && form.endTime <= form.time)
+  // L’orario di fine esiste solo per gli eventi (anche se un evento viene trasformato in attività)
+  const endBeforeStart = !!(isEvent && form.endTime && form.time && form.endTime <= form.time)
   const timeError = touched && endBeforeStart
 
   const submit = (e) => {
@@ -77,7 +78,7 @@ export function TaskFormModal() {
       categoryId: form.categoryId || null,
       date: form.date || null,
       time: form.time || null,
-      endTime: (form.time && form.endTime) || null,
+      endTime: (isEvent && form.time && form.endTime) || null,
       location: isEvent ? form.location.trim() : '',
       projectId: form.projectId || null,
       listId: form.listId || null,
@@ -129,18 +130,17 @@ export function TaskFormModal() {
       }
     >
       <form id="task-form" onSubmit={submit} className="flex flex-col gap-5 pb-2" noValidate>
-        {!isEdit && (
-          <SegmentedControl
-            label="Tipo"
-            value={form.kind}
-            onChange={(kind) => set({ kind })}
-            className="w-full"
-            options={[
-              { value: 'task', label: 'Attività', icon: ListChecks },
-              { value: 'event', label: 'Evento', icon: CalendarDays },
-            ]}
-          />
-        )}
+        {/* Tipo modificabile anche in modifica: un’attività può diventare un evento e viceversa */}
+        <SegmentedControl
+          label="Tipo"
+          value={form.kind}
+          onChange={(kind) => set({ kind })}
+          className="w-full"
+          options={[
+            { value: 'task', label: 'Attività', icon: ListChecks },
+            { value: 'event', label: 'Evento', icon: CalendarDays },
+          ]}
+        />
 
         <Field label="Titolo" htmlFor="task-title" error={titleError && 'Inserisci un titolo.'}>
           <input

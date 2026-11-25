@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router'
-import { CalendarDays, ChevronLeft, ChevronRight, Columns3, Plus, Square } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight, Columns3, Square } from 'lucide-react'
 import { addDays, addMonths, isValidDateKey, formatLongDay, formatMonth, formatWeekRange, todayKey, weekDays } from '../lib/dates'
 import { groupByDate } from '../lib/planner'
 import { useData } from '../context/DataContext'
 import { useUI } from '../context/UIContext'
 import { Button, IconButton } from '../components/ui/Button'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 import { DayPlanner } from '../components/calendar/DayPlanner'
 import { DayTimeline } from '../components/calendar/DayTimeline'
 import { MiniMonth } from '../components/calendar/MiniMonth'
@@ -49,9 +49,7 @@ export default function Calendar() {
         title="Calendario"
         description="Appuntamenti, scadenze e attività giorno per giorno. Seleziona una data per aprirne il planner."
         actions={
-          <Button icon={Plus} onClick={() => openCreateTask({ kind: 'event', date })} className="max-sm:hidden">
-            Nuovo evento
-          </Button>
+          <PageAddButton onClick={() => openCreateTask({ kind: 'event', date })}>Nuovo evento</PageAddButton>
         }
       />
 

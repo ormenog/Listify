@@ -6,7 +6,7 @@ import { useUI } from '../context/UIContext'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { FilterChips } from '../components/ui/FilterChips'
-import { PageHeader } from '../components/layout/PageHeader'
+import { PageAddButton, PageHeader } from '../components/layout/PageHeader'
 import { ProjectCard } from '../components/projects/ProjectCard'
 
 export default function Projects() {
@@ -23,9 +23,7 @@ export default function Projects() {
         title="Progetti"
         description="Raggruppa liste e attività legate a un obiettivo comune. I progetti sono facoltativi: puoi usare Listify anche senza."
         actions={
-          <Button icon={Plus} onClick={newProject} className="max-sm:hidden">
-            Nuovo progetto
-          </Button>
+          <PageAddButton onClick={newProject}>Nuovo progetto</PageAddButton>
         }
       />
 
@@ -76,7 +74,7 @@ export default function Projects() {
                 Mostra tutti
               </Button>
             ) : (
-              <Button icon={Plus} onClick={newProject}>
+              <Button icon={Plus} onClick={newProject} className="max-sm:hidden">
                 Crea un progetto
               </Button>
             )

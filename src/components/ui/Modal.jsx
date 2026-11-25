@@ -2,15 +2,18 @@ import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import { useBackToClose } from '../../hooks/useBackToClose'
 
 /**
  * Modal accessibile: centrata su desktop, bottom sheet su mobile.
- * Chiusura con Esc, click sull'overlay o pulsante X. Blocca lo scroll della pagina.
+ * Chiusura con Esc, click sull'overlay, pulsante X o tasto "indietro" del telefono/browser.
+ * Blocca lo scroll della pagina.
  */
 export function Modal({ open, onClose, title, description, children, footer, size = 'md' }) {
   const panelRef = useRef(null)
   const titleId = useId()
   const descId = useId()
+  useBackToClose(open, onClose)
 
   useEffect(() => {
     if (!open) return
